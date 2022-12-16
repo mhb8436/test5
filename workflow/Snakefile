@@ -1,34 +1,37 @@
 configfile: "config/config.yaml"
 
 FILENAMES = ['A','B','C']
-OUTDIR = config['out_dir']
-#print(OUTDIR)
+DATA_DIR = config['data_dir']
+OUTPUTS_DIR = config['outputs_dir']
+
+from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
+S3 = S3RemoteProvider()
 
 rule all:
 	input:
-		expand("/home/ubuntu/snake/test4/results/{OUTDIR}/wc_all.png", OUTDIR=OUTDIR)
+		S3.remote(expand("{OUTPUTS_DIR}/wc_all.png", OUTPUTS_DIR=OUTPUTS_DIR))
 
 rule count:
 	input:
-		"/home/ubuntu/snake/test4/resources/{filename}.txt"
+		S3.remote(expand("{DATA_DIR}/{filename}.txt", DATA_DIR=DATA_DIR, filename=FILENAMES))
 	output:
-		"/home/ubuntu/snake/test4/results/{OUTDIR}/wc_{filename}.txt"
+		S3.remote("{OUTPUTS_DIR}/wc_{filename}.txt")
 	shell:
 		"wc -w {input} > {output}"
 
 rule concat:
 	input:
-		expand('/home/ubuntu/snake/test4/results/{OUTDIR}/wc_{filename}.txt', filename=FILENAMES, OUTDIR=OUTDIR)
+		S3.remote(expand('{OUTPUTS_DIR}/wc_{filename}.txt', filename=FILENAMES, OUTPUTS_DIR=OUTPUTS_DIR))
 	output:
-		expand("/home/ubuntu/snake/test4/results/{OUTDIR}/wc_all.csv", OUTDIR=OUTDIR)
+		S3.remote(expand("{OUTPUTS_DIR}/wc_all.csv", OUTPUTS_DIR=OUTPUTS_DIR))
 	script:
 		"scripts/concat.py"
 
 rule plot:
 	input:
-		expand("/home/ubuntu/snake/test4/results/{OUTDIR}/wc_all.csv", OUTDIR=OUTDIR)
+		S3.remote(expand("{OUTPUTS_DIR}/wc_all.csv", OUTPUTS_DIR=OUTPUTS_DIR))
 	output:
-		expand("/home/ubuntu/snake/test4/results/{OUTDIR}/wc_all.png", OUTDIR=OUTDIR)
+		S3.remote(expand("{OUTPUTS_DIR}/wc_all.png", OUTPUTS_DIR=OUTPUTS_DIR))
 	script:
 		"scripts/plot.py"
 
