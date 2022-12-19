@@ -22,7 +22,7 @@ rule concat:
 	output:
 		expand("{OUTPUTS_DIR}/wc_all.csv", OUTPUTS_DIR=OUTPUTS_DIR)
 	script:
-		"scripts/concat.py"
+		"python scripts/concat.py"
 
 rule plot:
 	input:
@@ -30,5 +30,5 @@ rule plot:
 	output:
 		expand("{OUTPUTS_DIR}/wc_all.png", OUTPUTS_DIR=OUTPUTS_DIR)
 	script:
-		"scripts/plot.py"
+		"python scripts/plot.py"
 
