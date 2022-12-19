@@ -18,7 +18,7 @@ rule count:
 
 rule concat:
 	input:
-		expand('{OUTPUTS_DIR}/wc_{filename}.txt', filename=FILENAMES, OUTPUTS_DIR=OUTPUTS_DIR)
+		expand("{OUTPUTS_DIR}/wc_{filename}.txt", filename=FILENAMES, OUTPUTS_DIR=OUTPUTS_DIR)
 	output:
 		expand("{OUTPUTS_DIR}/wc_all.csv", OUTPUTS_DIR=OUTPUTS_DIR)
 	script:
