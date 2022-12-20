@@ -12,21 +12,21 @@ rule count:
 	input:
 		expand("{DATA_DIR}/{filename}.txt", DATA_DIR=DATA_DIR, filename=FILENAMES)
 	output:
-		expand("{OUTPUTS_DIR}/wc_{filename}.txt", OUTPUTS_DIR=OUTPUTS_DIR, filename=FILENAMES)
+		"temp/wc_{filename}.txt"
 	shell:
 		"wc -w {input} > {output}"
 
 rule concat:
 	input:
-		expand("{OUTPUTS_DIR}/wc_{filename}.txt", filename=FILENAMES, OUTPUTS_DIR=OUTPUTS_DIR)
+		"temp/wc_{filename}.txt"
 	output:
-		expand("{OUTPUTS_DIR}/wc_all.csv", OUTPUTS_DIR=OUTPUTS_DIR)
+		"temp/wc_all.csv"
 	script:
 		"scripts/concat.py"
 
 rule plot:
 	input:
-		expand("{OUTPUTS_DIR}/wc_all.csv", OUTPUTS_DIR=OUTPUTS_DIR)
+		"temp/wc_all.csv"
 	output:
 		expand("{OUTPUTS_DIR}/wc_all.png", OUTPUTS_DIR=OUTPUTS_DIR)
 	script:
