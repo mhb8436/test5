@@ -12,7 +12,7 @@ rule count:
 	input:
 		expand("{DATA_DIR}/{filename}.txt", DATA_DIR=DATA_DIR, filename=FILENAMES)
 	output:
-		"temp/wc_{filename}.txt"
+		expand("temp/wc_{filename}.txt", filename=FILENAMES)
 	shell:
 		"wc -w {input} > {output}"
 
